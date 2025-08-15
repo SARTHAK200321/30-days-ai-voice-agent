@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Murf AI Conversational Agent</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+    .container {
+      text-align: center;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 350px;
+      margin: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Toggle button styles */
+    #recordToggle {
+      margin: 10px auto;
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 50px;
+      color: white;
+      background-color: #007bff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    #recordToggle.recording {
+      background-color: #e63946;
+      animation: pulse 1s infinite;
+    }
+    #recordToggle:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      box-shadow: none;
+      animation: none;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 rgba(230, 57, 70, 0.7); }
+      50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(230, 57, 70, 0.7); }
+      100% { transform: scale(1); box-shadow: 0 0 0 rgba(230, 57, 70, 0.7); }
+    }
+    #day9Status {
+      font-weight: bold;
+      margin-top: 10px;
+      min-height: 30px;
+      color: #333;
+    }
+    .error-message {
+      color: red;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    #chatContainer {
+      display: flex;
+      flex-direction: column;
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      background: #fafafa;
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .chat-message {
+      max-width: 75%;
+      padding: 8px 12px;
+      margin: 6px 0;
+      border-radius: 12px;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+    .chat-user {
+      align-self: flex-end;
+      background-color: #d9f0d9; /* Light green */
+      color: #000;
+      text-align: right;
+    }
+    .chat-bot {
+      align-self: flex-start;
+      background-color: #f0f0f0; /* Light grey */
+      color: #000;
+      text-align: left;
+    }
+    .chat-message strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+    pre#day9Reply {
+      text-align: left;
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      font-size: 13px;
+      margin-top: 0;
+      min-height: 60px;
+    }
+    audio {
+      display: none; /* Hidden, will autoplay */
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Conversational AI Agent</h2>
+
+    <!-- Single toggle record button -->
+    <button id="recordToggle">🎙 Start Recording</button>
+
+    <!-- Hidden audio element -->
+    <audio id="day9Audio"></audio>
+
+    <p id="day9Status">Press the button to start recording.</p>
+    <p id="errorMsgDay9" class="error-message" style="display:none;"></p>
+
+    <h3>Conversation:</h3>
+    <div id="chatContainer">
+      <pre style="color: #666; font-style: italic; margin-bottom: 10px;">
+
+      </pre>
+    </div>
+
+    <h3>LLM Reply:</h3>
+    <pre id="day9Reply">Reply will appear here...</pre>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
