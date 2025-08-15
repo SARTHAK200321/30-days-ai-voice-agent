@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Murf AI Conversational Agent</title>
+  <title>Murf AI Echo Bot</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -22,48 +22,46 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       width: 350px;
       margin: 10px;
-      display: flex;
-      flex-direction: column;
     }
-    /* Toggle button styles */
-    #recordToggle {
-      margin: 10px auto;
-      padding: 14px 28px;
-      font-size: 16px;
-      font-weight: bold;
+    button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 14px;
       border: none;
-      border-radius: 50px;
-      color: white;
+      border-radius: 4px;
       background-color: #007bff;
+      color: white;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
-    #recordToggle.recording {
-      background-color: #e63946;
-      animation: pulse 1s infinite;
+    button:hover:not(:disabled) {
+      background-color: #0056b3;
     }
-    #recordToggle:disabled {
+    button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
-      box-shadow: none;
-      animation: none;
     }
-    @keyframes pulse {
-      0% { transform: scale(1); box-shadow: 0 0 0 rgba(230, 57, 70, 0.7); }
-      50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(230, 57, 70, 0.7); }
-      100% { transform: scale(1); box-shadow: 0 0 0 rgba(230, 57, 70, 0.7); }
-    }
-    #day9Status {
+    #status, #day9Status {
       font-weight: bold;
       margin-top: 10px;
-      min-height: 30px;
+      white-space: pre-line;
+      min-height: 60px;
       color: #333;
     }
+    /* New error message style */
     .error-message {
       color: red;
       font-weight: bold;
       margin-top: 5px;
+    }
+    #transcriptOutput, #day9Reply {
+      text-align: left;
+      background: #f4f4f4;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      max-height: 200px;
+      overflow-y: auto;
     }
     #chatContainer {
       display: flex;
@@ -75,72 +73,67 @@
       border-radius: 8px;
       margin-bottom: 10px;
       background: #fafafa;
-      text-align: left;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-    .chat-message {
-      max-width: 75%;
-      padding: 8px 12px;
-      margin: 6px 0;
-      border-radius: 12px;
-      word-wrap: break-word;
-      white-space: pre-wrap;
-    }
-    .chat-user {
-      align-self: flex-end;
-      background-color: #d9f0d9; /* Light green */
-      color: #000;
-      text-align: right;
-    }
-    .chat-bot {
-      align-self: flex-start;
-      background-color: #f0f0f0; /* Light grey */
-      color: #000;
-      text-align: left;
-    }
-    .chat-message strong {
-      display: block;
-      margin-bottom: 4px;
-    }
-    pre#day9Reply {
-      text-align: left;
-      background: #f4f4f4;
-      padding: 10px;
-      border-radius: 4px;
-      white-space: pre-wrap;
-      font-size: 13px;
-      margin-top: 0;
-      min-height: 60px;
     }
     audio {
-      display: none; /* Hidden, will autoplay */
+      margin-top: 10px;
+      width: 100%;
+    }
+    h2, h3 {
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-
+  <!-- DAY 7 UI (Left Panel) -->
   <div class="container">
-    <h2>Conversational AI Agent</h2>
+    <h2>Text-to-Speech</h2>
+    <audio controls>
+      <source src="http://127.0.0.1:8000/download/afdb7ba5d7c4415c8680e58aec1719a7" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
 
-    <!-- Single toggle record button -->
-    <button id="recordToggle">🎙 Start Recording</button>
-
-    <!-- Hidden audio element -->
-    <audio id="day9Audio"></audio>
-
-    <p id="day9Status">Press the button to start recording.</p>
-    <p id="errorMsgDay9" class="error-message" style="display:none;"></p>
-
-    <h3>Conversation:</h3>
-    <div id="chatContainer">
-      <pre style="color: #666; font-style: italic; margin-bottom: 10px;">
-
-      </pre>
+    <h2>Echo Bot v2 </h2>
+    <div>
+      <button id="start">Start Recording</button>
+      <button id="stop" disabled>Stop Recording</button>
     </div>
 
-    <h3>LLM Reply:</h3>
-    <pre id="day9Reply">Reply will appear here...</pre>
+    <audio id="audioPlayback" controls></audio>
+    <p id="status">Press “Start Recording” to begin.</p>
+    <!-- Error area -->
+    <p id="errorMsg" class="error-message" style="display:none;"></p>
+
+    <div>
+      <h3>Transcription Output:</h3>
+      <pre id="transcriptOutput">Transcribed text will appear here...</pre>
+    </div>
+  </div>
+
+  <!-- DAY 9 UI (Right Panel) -->
+  <div class="container">
+    <h2>LLM Audio Reply</h2>
+    <div>
+      <button id="startDay9">Start Recording</button>
+      <button id="stopDay9" disabled>Stop Recording</button>
+    </div>
+
+    <audio id="day9Audio" controls></audio>
+    <p id="day9Status"></p>
+    <!-- Error area -->
+    <p id="errorMsgDay9" class="error-message" style="display:none;"></p>
+
+    <!-- Chat view replaces transcription -->
+    <div>
+      <h3>Conversation:</h3>
+      <div id="chatContainer">
+        <!-- Chat messages will be appended here -->
+      </div>
+    </div>
+
+    <div>
+      <h3>LLM Reply:</h3>
+      <pre id="day9Reply">Reply will appear here...</pre>
+    </div>
   </div>
 
   <script src="script.js"></script>
